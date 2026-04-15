@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Landmark, ArrowLeftRight,
-  CreditCard, HandCoins, User, LogOut
+  CreditCard, HandCoins, User, LogOut, Send
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 
@@ -9,9 +9,11 @@ const links = [
   { to: '/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/accounts',     icon: Landmark,        label: 'Accounts' },
   { to: '/transactions', icon: ArrowLeftRight,   label: 'Transactions' },
+  { to: '/transfer', icon: Send, label: 'Transfer' },
   { to: '/loans',        icon: HandCoins,        label: 'Loans' },
   { to: '/cards',        icon: CreditCard,       label: 'Cards' },
   { to: '/profile',      icon: User,             label: 'Profile' },
+  
 ]
 
 export default function Sidebar() {

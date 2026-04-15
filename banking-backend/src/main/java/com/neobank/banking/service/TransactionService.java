@@ -38,6 +38,11 @@ public class TransactionService {
 
         if (!fromAccount.getUserId().equals(user.getId()))
             throw new RuntimeException("Unauthorized");
+        if (fromAccount.getId().equals(toAccount.getId()))
+        throw new RuntimeException("Cannot transfer to the same account");
+
+        if (request.getAmount() < 1)
+        throw new RuntimeException("Minimum transfer amount is ₹1");
 
         if (fromAccount.getBalance() < request.getAmount())
             throw new RuntimeException("Insufficient balance");
@@ -47,16 +52,30 @@ public class TransactionService {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
 
-        Transaction txn = new Transaction();
-        txn.setAccountId(fromAccount.getId());
-        txn.setUserId(user.getId());
-        txn.setType("debit");
-        txn.setAmount(request.getAmount());
-        txn.setBalanceAfter(fromAccount.getBalance());
-        txn.setDescription(request.getDescription());
-        txn.setCategory("Transfer");
-        txn.setReferenceNumber("TXN" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        String refNumber = "TXN" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
-        return transactionRepository.save(txn);
+Transaction debitTxn = new Transaction();
+debitTxn.setAccountId(fromAccount.getId());
+debitTxn.setUserId(user.getId());
+debitTxn.setType("debit");
+debitTxn.setAmount(request.getAmount());
+debitTxn.setBalanceAfter(fromAccount.getBalance());
+debitTxn.setDescription(request.getDescription() != null ? request.getDescription() : "Fund transfer");
+debitTxn.setCategory("Transfer");
+debitTxn.setReferenceNumber(refNumber);
+transactionRepository.save(debitTxn);
+
+Transaction creditTxn = new Transaction();
+creditTxn.setAccountId(toAccount.getId());
+creditTxn.setUserId(toAccount.getUserId());
+creditTxn.setType("credit");
+creditTxn.setAmount(request.getAmount());
+creditTxn.setBalanceAfter(toAccount.getBalance());
+creditTxn.setDescription("Received: " + (request.getDescription() != null ? request.getDescription() : "Fund transfer"));
+creditTxn.setCategory("Transfer");
+creditTxn.setReferenceNumber(refNumber);
+transactionRepository.save(creditTxn);
+
+return debitTxn;
     }
 }

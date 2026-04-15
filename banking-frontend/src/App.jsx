@@ -9,6 +9,7 @@ import Loans from './pages/loans/Loans'
 import Cards from './pages/cards/Cards'
 import Profile from './pages/profile/Profile'
 import ProtectedRoute from './components/layout/ProtectedRoute'
+import Transfer from './pages/transactions/Transfer'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/transfer" element={<Transfer />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/transactions" element={<Transactions />} />

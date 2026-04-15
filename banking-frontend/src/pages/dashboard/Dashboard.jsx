@@ -6,6 +6,7 @@ import Badge from '../../components/ui/Badge'
 import { formatCurrency, formatDate } from '../../utils/formatters'
 import useAuthStore from '../../store/authStore'
 import api from '../../api/axiosInstance'
+import { useNavigate } from 'react-router-dom'
 
 const spendData = [
   { month: 'Oct', income: 52000, expense: 34000 },
@@ -17,6 +18,7 @@ const spendData = [
 ]
 
 export default function Dashboard() {
+  const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
   const [accounts, setAccounts] = useState([])
   const [transactions, setTransactions] = useState([])
@@ -88,12 +90,12 @@ export default function Dashboard() {
           <h2 className="text-sm font-semibold text-slate-700 mb-4">Quick actions</h2>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { label: 'Transfer',  color: 'bg-blue-50 text-blue-700' },
-              { label: 'Pay Bill',  color: 'bg-purple-50 text-purple-700' },
-              { label: 'Deposit',   color: 'bg-green-50 text-green-700' },
-              { label: 'Statement', color: 'bg-amber-50 text-amber-700' },
-            ].map(({ label, color }) => (
-              <button key={label} className={`${color} rounded-xl py-4 text-sm font-medium hover:opacity-80 transition-opacity`}>
+              { label: 'Transfer',  color: 'bg-blue-50 text-blue-700',   action: () => navigate('/transfer') },
+{ label: 'Pay Bill',  color: 'bg-purple-50 text-purple-700', action: () => {} },
+{ label: 'Deposit',   color: 'bg-green-50 text-green-700',  action: () => {} },
+{ label: 'Statement', color: 'bg-amber-50 text-amber-700',  action: () => navigate('/transactions') },
+            ].map(({ label, color, action }) => (
+              <button key={label} onClick={action} className={`${color} rounded-xl py-4 text-sm font-medium hover:opacity-80 transition-opacity`}>
                 {label}
               </button>
             ))}
